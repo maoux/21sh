@@ -63,7 +63,10 @@ t_string			*sh_dupline(t_string *str)
 			ft_dprintf(STDERR_FILENO, "21sh: memory allocation failed\n");
 			return (ret);
 		}
-		new->value = tmp->value;
+		if (tmp->value == '\n')
+			new->value = ' ';
+		else
+			new->value = tmp->value;
 		tmp = tmp->next;
 		ret = add_to_string(ret, new);
 	}

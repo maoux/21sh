@@ -54,12 +54,26 @@ static void			sh_modify_tmp_env(t_shell *shell, char **av, int *i)
 	name = ft_strcpy_spec(av[*i], '=');
 	value = ft_strrcpy_spec(av[*i], '=');
 	if (sh_get_var_env(shell->env, name))
-		sh_update_env(shell, name, value);
+		shell->env = sh_update_env(shell, name, value);
 	else
-		sh_add_to_env(shell, name, value);
+		shell->env = sh_add_to_env(shell, name, value);
 	ft_strdel(&name);
 	ft_strdel(&value);
 	(*i)++;
+}
+
+static void			sh_env_options(t_shell *shell, int *i, char **av)
+{
+	if (!ft_strcmp(av[*i], "-i"))
+	{
+		shell->env = NULL;
+		(*i)++;
+	}
+	if (!ft_strcmp(av[*i], "--"))
+	{
+		shell->env = NULL;
+		(*i)++;
+	}
 }
 
 void				sh_builtin_env(t_shell *shell, int ac, char **av,
@@ -73,9 +87,11 @@ void				sh_builtin_env(t_shell *shell, int ac, char **av,
 		sh_print_env(shell->env);
 	else
 	{
-		tmpenv = shell->env;
-		shell->env = sh_copy_env_temp(shell);
 		i = 1;
+		tmpenv = shell->env;
+		sh_env_options(shell, &i, av);
+		if (shell->env != NULL)
+			shell->env = sh_copy_env_temp(shell);
 		while (i < ac && (tmp = ft_strchr(av[i], '=')))
 			sh_modify_tmp_env(shell, av, &i);
 		if (i == ac)

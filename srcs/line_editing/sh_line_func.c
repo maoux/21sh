@@ -34,17 +34,12 @@ void			sh_print_line(t_shell *shell, t_line *line)
 	int			new_line;
 
 	tmp = line->lsize + shell->prompt_size;
-	if ((new_line = sh_count_newline(line)) > 0)
-		tputs(tgetstr("rc", NULL), 1, ft_putcharint);
-	else
+	if (tmp % shell->win_size->ws_col == 0)
+		tmp -= 1;
+	while (tmp > shell->prompt_size)
 	{
-		if (tmp % shell->win_size->ws_col == 0)
-			tmp -= 1;
-		while (tmp > shell->prompt_size)
-		{
-			tputs(tgetstr("le", NULL), 1, ft_putcharint);
-			tmp--;
-		}
+		tputs(tgetstr("le", NULL), 1, ft_putcharint);
+		tmp--;
 	}
 	tputs(tgetstr("cd", NULL), 1, ft_putcharint);
 	tputs(tgetstr("sc", NULL), 1, ft_putcharint);
