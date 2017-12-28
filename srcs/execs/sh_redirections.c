@@ -61,7 +61,10 @@ int					sh_handle_greatand(t_shell *shell, t_ast *node,
 {
 	if (redir->closed && redir->type == GREATAND)
 	{
-		close(redir->fd);
+		if (redir->fd == 2)
+			close(redir->fd);
+		else if (redir->fd < 2)
+			close(STDOUT_FILENO);
 		if (redir->fd == 2)
 			shell->err_closed = 1;
 		return (1);
