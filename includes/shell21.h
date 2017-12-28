@@ -309,6 +309,10 @@ int						sh_greatand_simple(t_redirection *redir);
 int						sh_greatand_param(t_shell *shell, t_redirection *redir);
 void					sh_exec_bin(t_shell *shell, const char *path,
 								char **av, t_ast *node);
+int						sh_is_builtin(char *cmd);
+void					sh_launch_builtin(t_shell *shell, char **av,
+								t_ast *node);
+void					sh_solve_redirection(t_shell *shell, t_ast *node);
 
 /*
 ** builtins functions

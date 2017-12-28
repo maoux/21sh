@@ -43,7 +43,7 @@ SRC_SHELL =	main.c\
 			sh_alternative_shell.c\
 			ft_shell.c\
  			sh_create_string.c\
-			tools.c\
+			tools.c
 
 SRC_LEXER = lexer.c\
 			lexer_handler.c\
@@ -68,6 +68,7 @@ SRC_EXECS = exec_tree.c\
 			sh_pathfinding.c\
 			sh_redirections.c\
 			sh_redirections2.c\
+			sh_is_builtin.c
 
 SRC_BUILTINS = sh_builtin_echo.c\
 				sh_builtin_exit.c\

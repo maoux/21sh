@@ -40,21 +40,29 @@ void				sh_exec_bin(t_shell *shell, const char *path,
 
 int					sh_exec_builtin(t_shell *shell, char **av, t_ast *node)
 {
-	if (!ft_strcmp(av[0], "echo"))
-		sh_builtin_echo(count_argv(av), av);
-	else if (!ft_strcmp(av[0], "cd"))
-		sh_builtin_cd(shell, count_argv(av), av);
-	else if (!ft_strcmp(av[0], "env"))
-		sh_builtin_env(shell, count_argv(av), av, node);
-	else if (!ft_strcmp(av[0], "exit"))
-		sh_builtin_exit(shell, count_argv(av), av);
-	else if (!ft_strcmp(av[0], "setenv"))
-		sh_builtin_setenv(shell, count_argv(av), av);
-	else if (!ft_strcmp(av[0], "unsetenv"))
-		sh_builtin_unsetenv(shell, count_argv(av), av);
-	else
-		return (1);
-	return (0);
+	pid_t			pid;
+	t_redirection	*tmp;
+	int				builtin;
+
+	if ((builtin = sh_is_builtin(av[0])))
+	{
+		if ((pid = fork()) == 0)
+		{
+			sh_solve_redirection(shell, node);
+			if (!ft_strcmp(av[0], "echo"))
+				sh_builtin_echo(count_argv(av), av);
+			else if (!ft_strcmp(av[0], "env"))
+				sh_builtin_env(shell, count_argv(av), av, node);
+			exit(EXIT_SUCCESS);
+		}
+		else if (pid < 0)
+			return (0);
+		shell->exit_value = sh_wait_child(pid);
+		sh_launch_builtin(shell, av, node);
+		shell->exit_builtin = builtin == 4 ? 1 : 0;
+		return (0);
+	}
+	return (1);
 }
 
 void				sh_solve_simple_command(t_shell *shell, t_ast *node)
